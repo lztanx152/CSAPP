@@ -58,6 +58,14 @@ void test_inplace_swap()
     printf("x = %i, y = %i\n", x, y);
 }
 
+void short_to_unsigned()
+{
+    short sx = -12345;
+    unsigned usx = sx;
+    printf("usx = %i\n", usx);
+    show_bytes((byte_pointer) &usx, sizeof(unsigned));
+}
+
 int main()
 {
     test_oversize();
@@ -67,4 +75,5 @@ int main()
     int test = 12;
     inplace_swap(&test, &test);
     printf("test = %i\n", test);
+    short_to_unsigned();
 }
