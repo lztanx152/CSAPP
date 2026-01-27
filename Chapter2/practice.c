@@ -2,6 +2,7 @@
 // Created by root on 2026/1/25.
 //
 
+#include <stdio.h>
 // 2.13 start
 int bis(int x, int m)
 {
@@ -25,5 +26,5 @@ int bool_xor(int x, int y)
 // 2.13 end
 int main()
 {
-
+    printf("%d\n", 1e20*1e20 - 1e20*1e20);
 }
