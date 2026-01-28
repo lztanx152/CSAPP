@@ -27,4 +27,11 @@ int bool_xor(int x, int y)
 int main()
 {
     printf("%d\n", 1e20*1e20 - 1e20*1e20);
+    float f = 1.0e10f;
+    double d = 0.1;
+    double result = (f + d) - f;
+    printf("f = %.1f\n", f);
+    printf("d = %.20f\n", d);
+    printf("(f + d) - f = %.20f\n", result);
+    printf("相等吗？ %s\n", result == d ? "是" : "否");
 }

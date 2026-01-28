@@ -72,3 +72,5 @@ x+y == uy+ux(x,y为int,ux,uy是强行转换的数字):当用==比较时，编译
 ## 2.4.6
 C语言的浮点数运算使用偶数舍入<br>
 float和double转int会向0舍入<br>
+练习题2.54B的答案有问题float-double<br>
+
