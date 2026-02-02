@@ -99,11 +99,30 @@ void ex_2_59() {
 }
 //2.59 end
 //2.60 start
-
+unsigned replace_byte (unsigned x, int i, unsigned char b)
+{
+    char *p = (char *)&x;
+    if (is_little_endian())
+    {
+        *(p + i) = b;
+    } else
+    {
+        *(p + sizeof(unsigned) - 1 - i) = b;
+    }
+    return x;
+}
+void ex_2_60()
+{
+    printf("----------- Solution of 2.60 start ---------------\n");
+    printf("%x, %d, %x: %x\n", 0x12345678, 2, 0xAB, replace_byte(0x12345678, 2, 0xAB));
+    printf("%x, %d, %x: %x\n", 0x12345678, 0, 0xAB, replace_byte(0x12345678, 0, 0xAB));
+    printf("----------- Solution of 2.60 end ---------------\n");
+}
 //2.60 end
 int main()
 {
     ex_2_57();
     ex_2_58();
     ex_2_59();
+    ex_2_60();
 }
