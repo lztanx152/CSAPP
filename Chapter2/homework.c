@@ -119,10 +119,43 @@ void ex_2_60()
     printf("----------- Solution of 2.60 end ---------------\n");
 }
 //2.60 end
+//2.61 start
+int solution_2_61_a(int x)
+{
+    return !~x;
+}
+int solution_2_61_b(int x)
+{
+    return !x;
+}
+int solution_2_61_c(int x)
+{
+    return !(~x & 0xFF);
+}
+int solution_2_61_d(int x)
+{
+    return !(x & 0xFF000000);
+}
+void ex_2_61()
+{
+    printf("----------- Solution of 2.61 start ---------------\n");
+    printf("test A, %x is %d \n",0xFFFFFFFF, solution_2_61_a(0xFFFFFFFF));
+    printf("test A, %x is %d \n",0xFFFFFFF0, solution_2_61_a(0xFFFFFFF0));
+    printf("test B, %x is %d \n",0xFFFFFFF0, solution_2_61_b(0xFFFFFFF0));
+    printf("test B, %x is %d \n",0x00000000, solution_2_61_b(0x00000000));
+    printf("test C, %x is %d \n",0x000000F0, solution_2_61_c(0x000000F0));
+    printf("test C, %x is %d \n",0xFF, solution_2_61_c(0xFF));
+    printf("test D, %x is %d \n",0xFF0000FF, solution_2_61_d(0xFF0000FF));
+    printf("test D, %x is %d \n",0xF00000FF, solution_2_61_d(0xF00000FF));
+    printf("test D, %x is %d \n",0x000000FF, solution_2_61_d(0x000000FF));
+    printf("----------- Solution of 2.61 end ---------------\n");
+}
+//2.61 end
 int main()
 {
     ex_2_57();
     ex_2_58();
     ex_2_59();
     ex_2_60();
+    ex_2_61();
 }

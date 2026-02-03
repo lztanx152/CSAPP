@@ -74,3 +74,5 @@ C语言的浮点数运算使用偶数舍入<br>
 float和double转int会向0舍入<br>
 练习题2.54B的答案有问题float-double<br>
 
+# 课后作业
+在C语言中，对 unsigned char 进行 ~ 操作时，会进行整数提升<br>
