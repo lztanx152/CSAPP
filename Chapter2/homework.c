@@ -1,6 +1,7 @@
 //
 // Created by root on 2026/1/21.
 //
+#include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -316,6 +317,88 @@ void ex_2_69()
     printf("----------- Solution of 2.69 end ---------------\n");
 }
 //2.69 end
+//2.70 start
+// 当x可以被表示为n比特二进制补码时返回1，否则0 1<=n<=w
+int fits_bits(int x, int n)
+{
+// 核心是x大于0的时候，左数倒数第1个0在内和左边的位数要小于等于n
+    // 负数的话换成右边
+    //下面的逻辑是：正数的情况下，如果不够，左移会丢掉0，负数的话，会丢掉1
+    return x<< (sizeof(int) * 8 - n) >> (sizeof(int) * 8 - n) == x;
+}
+void ex_2_70()
+{
+    printf("----------- Solution of 2.70 start ---------------\n");
+    printf("for %b, %d, fits_bits:%d\n",0b11000010,5, fits_bits(0b11000010, 5));
+    printf("for %b, %d, fits_bits:%d\n",0b000010,5, fits_bits(0b000010, 5));
+    printf("----------- Solution of 2.70 end ---------------\n");
+}
+//2.70 end
+//2.71 start
+//A:未考虑负数
+int xbyte(unsigned x, int bytenum)
+{
+    // 两种办法
+    // 先左移再右移，自动完成符号扩展
+    // return (int) x << ((3 - bytenum) * 8) >> (3 * 8);
+    // 利用c语言强制转换
+    return (int)(char)((x >> (bytenum * 8)) & 0xff);
+}
+void ex_2_71()
+{
+    printf("----------- Solution of 2.71 start ---------------\n");
+    printf("for %x and %d is %x\n",0x12345678, 0, xbyte(0x12345678, 0));
+    printf("for %x and %d is %x\n",0x12345678, 1, xbyte(0x12345678, 1));
+    printf("for %x and %d is %x\n",0x12345678, 2, xbyte(0x12345678, 2));
+    printf("for %x and %d is %x\n",0x12345678, 3, xbyte(0x12345678, 3));
+    printf("for %x and %d is %x\n",0xffffffff, 3, xbyte(0xffffffff, 3));
+    printf("----------- Solution of 2.71 end ---------------\n");
+
+}
+//2.71 end
+//2.72 start
+//A:sizeof返回unsigned，int - unsigned总是返回正数
+//B:sizeof挪到右边
+//2.72 end
+//2.73 start
+// 补码运算，使用INT_MAX和MIN作为上下界
+int saturating_add(int x, int y)
+{
+    int sum = x + y;
+    int sign = 1<<31;
+    // 加数大于0，和小于0，加数小于0，和大于0是溢出
+    int overflow = (!(x&sign)) && (!(y&sign)) &&(sum&sign);
+    int downflow = (x&sign) && (y&sign) &&(!(sum&sign));
+    (overflow && (sum = INT_MAX)) || (downflow && (sum = INT_MIN));
+    return sum;
+}
+void ex_2_73()
+{
+    printf("----------- Solution of 2.73 start ---------------\n");
+    printf("for %x, %x, is %x\n", INT_MAX, INT_MAX, saturating_add(INT_MAX, INT_MAX));
+    printf("for %x, %x, is %x\n", -1, INT_MIN, saturating_add(-1, INT_MIN));
+    printf("for %x, %x, is %x\n", -1, 3, saturating_add(-1, 3));
+    printf("----------- Solution of 2.73 end ---------------\n");
+}
+//2.73 end
+//2.74 start
+int tsub_ok(int x, int y)
+{
+    int minus = x - y;
+    // 加数大于0，和小于0，加数小于0，和大于0是溢出
+    // y如果是INT_MIN，肯定溢出
+    int overflow = (x > 0) && (y<0) && (minus<0);
+    int downflow = (x < 0) && (y>0) && (minus>0);
+    return !(overflow || downflow || y == INT_MIN);
+}
+void ex_2_74()
+{
+    printf("----------- Solution of 2.74 start ---------------\n");
+    printf("for %x,%x is %x\n", INT_MAX, INT_MIN, tsub_ok(INT_MAX, INT_MIN));
+    printf("for %x,%x is %x\n", INT_MAX, 1111, tsub_ok(INT_MAX, 1111));
+    printf("----------- Solution of 2.74 end ---------------\n");
+}
+//2.74 end
 int main()
 {
     ex_2_57();
@@ -331,4 +414,8 @@ int main()
     ex_2_67();
     ex_2_68();
     ex_2_69();
+    ex_2_70();
+    ex_2_71();
+    ex_2_73();
+    ex_2_74();
 }
