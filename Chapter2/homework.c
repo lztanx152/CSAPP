@@ -1,6 +1,7 @@
 //
 // Created by root on 2026/1/21.
 //
+#include <stdbool.h>
 #include <stdio.h>
 
 // 2.55 略
@@ -151,6 +152,85 @@ void ex_2_61()
     printf("----------- Solution of 2.61 end ---------------\n");
 }
 //2.61 end
+//2.62 start
+int int_shifts_are_arithmetic()
+{
+    return 0xff000000 >> (sizeof(int)*8 - 1) & 0x00000001;
+}
+void ex_2_62()
+{
+    printf("----------- Solution of 2.62 start ---------------\n");
+    printf("int_shifts_are_arithmetic: %x\n", int_shifts_are_arithmetic());
+    printf("----------- Solution of 2.62 end ---------------\n");
+}
+//2.62 end
+//2.63 start
+unsigned srl(unsigned x, int k)
+{
+    unsigned xsra = (int) x >> k;
+    xsra = xsra & ~(0xffffffff << (8*sizeof(int) - k));
+    return xsra;
+}
+// ****
+int sra(int x, int k) {
+    int xsrl = (unsigned) x >> k;
+    int w = sizeof(int) * 8;
+    int mask = 0xffffffff << (w - k);
+    int m = 1 << (w - 1);
+    // 核心是根据x的正负性质获取掩码
+    // 0-1的得到全1，1-1为0
+    mask &= ! (x & m) - 1;
+    return xsrl | mask;
+}
+
+void ex_2_63()
+{
+    printf("----------- Solution of 2.63 start ---------------\n");
+    printf("SRL of %b by %d is %b\n", -1, 12, srl((unsigned)-1, 12));
+    printf("SRL of %b by %d is %b\n", 1,  12, srl((unsigned)1, 12));
+    printf("SRA of %b by %d is %b\n", -100000,  12, sra(-100000, 12));
+    printf("SRA of %b by %d is %b\n", 1,  12, sra(1, 12));
+    printf("----------- Solution of 2.63 end ---------------\n");
+}
+//2.63 end
+//2.64 start
+// x的任何奇数位置为1时返回1，其他为0
+int any_odd_one(unsigned x)
+{
+    return (bool)(x & 0xAAAAAAAA);
+}
+void ex_2_64()
+{
+    printf("----------- Solution of 2.64 start ---------------\n");
+    printf("any_odd_one:%x\n", any_odd_one(0));
+    printf("any_odd_one:%x\n", any_odd_one(1));
+    printf("any_odd_one:%x\n", any_odd_one(2));
+    printf("----------- Solution of 2.64 end ---------------\n");
+}
+//2.64 end
+//2.65 start
+// x中若有奇数个1返回1，否则0
+// 涉及异或的理解：按位无进位加法
+// 异或运算可以统计1的个数
+// ****
+int odd_ones(unsigned x)
+{
+    x ^= x >> 16;
+    x ^= x >> 8;
+    x ^= x >> 4;
+    x ^= x >> 2;
+    x ^= x >> 1;
+    x &= 0x1;
+    return x;
+}
+void ex_2_65()
+{
+    printf("----------- Solution of 2.65 start ---------------\n");
+    printf("odd_ones:%x\n", odd_ones(0b101));
+    printf("odd_ones:%x\n", odd_ones(0b1011));
+    printf("----------- Solution of 2.65 end ---------------\n");
+}
+//2.65 end
 int main()
 {
     ex_2_57();
@@ -158,4 +238,8 @@ int main()
     ex_2_59();
     ex_2_60();
     ex_2_61();
+    ex_2_62();
+    ex_2_63();
+    ex_2_64();
+    ex_2_65();
 }
