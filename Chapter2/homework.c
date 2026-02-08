@@ -211,7 +211,7 @@ void ex_2_64()
 //2.65 start
 // x中若有奇数个1返回1，否则0
 // 涉及异或的理解：按位无进位加法
-// 异或运算可以统计1的个数
+// 异或运算可以统计1的个数（递归）
 // ****
 int odd_ones(unsigned x)
 {
@@ -231,6 +231,91 @@ void ex_2_65()
     printf("----------- Solution of 2.65 end ---------------\n");
 }
 //2.65 end
+//2.66 start
+// 返回一个能指示最左边的1的掩码
+// ****
+int leftmost_one(unsigned x)
+{
+    // 思路，先把x最高位1后面全部填充为0，再右移+1
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    return (x >> 1) + (x && 1);
+}
+void ex_2_66()
+{
+    printf("----------- Solution of 2.66 start ---------------\n");
+    printf("leftmost_one:%x of %x\n", leftmost_one(0x1), 0x1);
+    printf("leftmost_one:%x of %x\n", leftmost_one(0x66), 0x66);
+    printf("----------- Solution of 2.66 end ---------------\n");
+}
+//2.66 end
+//2.67 start
+//A: 左移的位数不应该大于等于数值的长度
+//B:在至少32位的机器上运行
+int int_size_is_32_B()
+{
+    int x = 1<<31;
+    int y = x<<1;
+    // int至少是32位置，先移动31位，再移动1位，如果是32位，那么移动之后必为0
+    return !y;
+}
+int int_size_is_32_C()
+{
+    int x = 1<<15;
+    int x1 = x<<15;
+    int y = x1<<2;
+    // 原理跟上面类似，无法一次性移动大于等于数字位数的位数，就拆开移动
+    return !y;
+}
+
+void ex_2_67()
+{
+    printf("----------- Solution of 2.67 start ---------------\n");
+    printf("int_size_is_32_B:%x\n", int_size_is_32_B());
+    printf("int_size_is_32_C:%x\n", int_size_is_32_C());
+    printf("----------- Solution of 2.67 end ---------------\n");
+}
+//2.67 end
+//2.68 start
+// 生成右边n个1的掩码,n>=1
+int lower_one_mask(int n)
+{   // 先获取最高位为1后面n-1个0的数字，再进行填充
+    int x = 0;
+    x = (unsigned)1 << (n - 1);
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    return x;
+}
+void ex_2_68()
+{
+    printf("----------- Solution of 2.68 start ---------------\n");
+    printf("for %d,lower_one_mask:%x\n",1, lower_one_mask(1));
+    printf("for %d,lower_one_mask:%x\n",6, lower_one_mask(6));
+    printf("for %d,lower_one_mask:%x\n",17, lower_one_mask(17));
+    printf("for %d,lower_one_mask:%x\n",32, lower_one_mask(32));
+    printf("----------- Solution of 2.68 end ---------------\n");
+}
+//2.68 end
+//2.69 start
+unsigned rotate_left(unsigned x, int n)
+{
+    return (x << n) | (x >> (32 - n));
+}
+void ex_2_69()
+{
+    printf("----------- Solution of 2.69 start ---------------\n");
+    printf("for %x, %d, rotate_left:%x\n",0x12345678,4, rotate_left(0x12345678, 4));
+    printf("for %x, %d, rotate_left:%x\n",0x12345678,20, rotate_left(0x12345678, 20));
+    printf("for %x, %d, rotate_left:%x\n",0x12345678,0, rotate_left(0x12345678, 0));
+    printf("----------- Solution of 2.69 end ---------------\n");
+}
+//2.69 end
 int main()
 {
     ex_2_57();
@@ -242,4 +327,8 @@ int main()
     ex_2_63();
     ex_2_64();
     ex_2_65();
+    ex_2_66();
+    ex_2_67();
+    ex_2_68();
+    ex_2_69();
 }
