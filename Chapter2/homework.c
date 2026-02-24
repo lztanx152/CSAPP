@@ -1,8 +1,10 @@
 //
 // Created by root on 2026/1/21.
 //
+#include <assert.h>
 #include <limits.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 
 // 2.55 略
@@ -399,6 +401,87 @@ void ex_2_74()
     printf("----------- Solution of 2.74 end ---------------\n");
 }
 //2.74 end
+//2.75 start
+//**** 参见2.12
+int signed_high_prod(int x, int y) {
+    int64_t mul = (int64_t) x * y;
+    return mul >> 32;
+}
+unsigned unsigned_high_prod(unsigned x, unsigned y)
+{
+    int sig_x = x >> 31;
+    int sig_y = y >> 31;
+    int signed_prod = signed_high_prod(x, y);
+    return signed_prod + x * sig_y + y * sig_x;
+}
+void ex_2_75()
+{
+    printf("----------- Solution of 2.75 start ---------------\n");
+    printf("for %x %x is %x\n", 0xffffffff,2,unsigned_high_prod(0xffffffff,2));
+    printf("for %x %x is %x\n", 0xffffffff,8,unsigned_high_prod(0xffffffff,8));
+    printf("----------- Solution of 2.75 end ---------------\n");
+}
+//2.75 end
+//2.76 end
+void *calloc(size_t nmemb, size_t size)
+{
+    // 核心是判断乘法是否溢出（结果除以除数）
+    // if (nmemb == 0 || size == 0) {
+    //     return NULL;
+    // }
+    // size_t buf_size = nmemb * size;
+    // if (nmemb == buf_size / size) {
+    //     void* ptr = malloc(buf_size);
+    //     if(ptr != NULL) {
+    //         memset(ptr, 0, buf_size);
+    //     }
+    //     return ptr;
+    // }
+    // return NULL;
+}
+//2.76 end
+//2.77 start
+int mult_17(int x)
+{
+    return (x<<4) + x;
+}
+int mult_minus_7(int x)
+{
+    return x - (x<<3);
+}
+int mult_60(int x)
+{
+    return (x<<6) - (x<<2);
+}
+int mult_minus_112(int x)
+{
+    return (x<<4) - (x<<7);
+}
+void ex_2_77()
+{
+    printf("----------- Solution of 2.77 start ---------------\n");
+    assert(mult_17(2)==34);
+    assert(mult_minus_7(2)==-14);
+    assert(mult_60(4)==240);
+    assert(mult_minus_112(2)==-224);
+    printf("----------- Solution of 2.77 end ---------------\n");
+}
+//2.77 end
+//2.78 start
+int divide_power2(int x, int k)
+{
+    int is_neg = x & (1<<31);
+    (is_neg && (x = x + (1 << k) - 1));
+    return x >> k;
+}
+void ex_2_78()
+{
+    printf("----------- Solution of 2.78 start ---------------\n");
+    printf("for %x , %d, result is %x\n", 0xff,2,divide_power2(0xff,2));
+    printf("for %x , %d, result is %x\n", -1,2,divide_power2(-1,2));
+    printf("----------- Solution of 2.78 end ---------------\n");
+}
+//2.78 end
 int main()
 {
     ex_2_57();
@@ -418,4 +501,7 @@ int main()
     ex_2_71();
     ex_2_73();
     ex_2_74();
+    ex_2_75();
+    ex_2_77();
+    ex_2_78();
 }
