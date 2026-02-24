@@ -482,6 +482,73 @@ void ex_2_78()
     printf("----------- Solution of 2.78 end ---------------\n");
 }
 //2.78 end
+//2.79 start****
+int mul3div4(int x)
+{
+    return divide_power2(x + (x<<1), 2);// 这道题的核心是正确舍入：正负数都要向0舍入
+}
+void ex_2_79()
+{
+    printf("----------- Solution of 2.79 start ---------------\n");
+    printf("for %d is %d \n", 12, mul3div4(12));
+    printf("for %d is %d \n", -13, mul3div4(-13));
+    printf("for %d is %d \n", INT_MAX - 1 , mul3div4(INT_MAX - 1));
+    printf("----------- Solution of 2.79 end ---------------\n");
+}
+//2.79 end
+//2.80 start
+int threefourths(int x)
+{
+    // 错误的答案：负数处理错误！！！
+    // return (x >> 1) + (x >> 2);
+    // 步骤1：判断x是否为负数（is_neg非0则为负数）
+    // INT_MIN的二进制是最高位1，其余0，x&INT_MIN：负数结果为INT_MIN（非0），正数为0
+    int is_neg = x & INT_MIN;
+    // 步骤2：拆分x为两部分：f（能被4整除的高位） + l（余数低位，0-3）
+    // ~0x3 = ...11111100，x&~0x3 会保留x中4的倍数部分，比如x=7→4，x=-7→-8
+    int f = x & ~0x3;
+    // 0x3=11，x&0x3 提取x除以4的余数（0/1/2/3），比如x=7→3，x=-7→1（因为-7的二进制补码末两位是01）
+    int l = x & 0x3;
+    // 步骤3：计算能被4整除部分的3/4：3f/4 = f/4 *3
+    int fd4 = f >> 2;          // f/4（右移2位等价于除以4，f是4的倍数，无精度丢失）
+    int fd4m3 = (fd4 << 1) + fd4;  // fd4*3（左移1位是*2，加自身就是*3）
+    // 步骤4：计算余数部分的3倍：3l（l是0-3，3l是0/3/6/9）
+    int lm3 = (l << 1) + l;    // l*3，等价于lm3 = 3*l
+    // 步骤5：定义偏移量：bias=3（二进制11），用于修正负数余数的舍入
+    int bias = (1 << 2) - 1;   // 4-1=3，右移2位的偏移量
+    // 步骤6：如果x是负数，给3l加bias（3），修正舍入方向（向零取整）
+    // is_neg非0时执行lm3 += bias；正数则不执行
+    (is_neg && (lm3 += bias));
+    // 步骤7：计算余数部分的3/4：3l/4（加bias后右移2位，实现向零取整）
+    int lm3d4 = lm3 >> 2;
+    // 步骤8：两部分结果相加，得到最终3x/4
+    return fd4m3 + lm3d4;
+}
+void ex_2_80()
+{
+    printf("----------- Solution of 2.80 start ---------------\n");
+    printf("for %d is %d \n", 12, threefourths(12));
+    printf("for %d is %d \n", -13, threefourths(-13));
+    printf("----------- Solution of 2.80 end ---------------\n");
+}
+//2.80 end
+//2.81 start
+int solution_2_81_a(int j, int k)
+{
+    return 0xffffffff << k;
+}
+int solution_2_81_b(int j, int k)
+{
+    return (0xffffffffu >> (32 -k - j)) & (0xffffffff << j);
+}
+void ex_2_81()
+{
+    printf("----------- Solution of 2.82 start ---------------\n");
+    printf("for %d and % d is %b \n", 12, 12, solution_2_81_a(12,12));
+    printf("for %d and % d is %b \n", 12, 12, solution_2_81_b(12,12));
+    printf("----------- Solution of 2.82 end ---------------\n");
+}
+//2.81 end
 int main()
 {
     ex_2_57();
@@ -504,4 +571,7 @@ int main()
     ex_2_75();
     ex_2_77();
     ex_2_78();
+    ex_2_79();
+    ex_2_80();
+    ex_2_81();
 }
