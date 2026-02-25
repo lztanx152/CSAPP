@@ -581,6 +581,70 @@ void ex_2_81()
 // C:(2-2^(-63))*2^(2^14-1)
 //2.86 end
 
+//2.87 start
+//略
+//2.87 end
+
+//2.88 start
+//略
+//2.88 end
+
+//2.89 start
+//A:1
+//B:0,当y是INT_MIN
+//C:0
+//D:0
+//E:0
+//2.89 end
+
+//2.90 start
+float u2f(unsigned x)
+{
+    // return (float) x;
+    return *(float*) &x;
+}
+
+float fpwr2(int x)
+{
+    unsigned exp, frac;
+    unsigned u;
+    if (x < -149) {
+        /* Too small. Return 0.0 */
+        exp = 0;
+        frac = 0;
+    } else if (x < -126) {
+        /* Denormalized result */
+        exp = 0;
+        frac = 1 << (unsigned)(x - (2-128-23));
+    } else if (x < 128) {
+        /* Normalized result. */
+        exp = x + 127;
+        frac = 0;
+    } else {
+        /* Too big. Return +oo */
+        exp = 0xff;
+        frac = 0;
+    }
+    /* Pack exp and frac into 32 bits */
+    u = exp << 23 | frac;
+    /* Return as float */
+    return u2f(u);
+}
+void ex_2_90()
+{
+    printf("----------- Solution of 2.90 start ---------------\n");
+    printf("for %d is %b \n", 12, fpwr2(12));// 打印错误
+    printf("for %d is %b \n", -12, fpwr2(-12));
+    printf("----------- Solution of 2.90 end ---------------\n");
+}
+//2.90 end
+
+//2.91 start
+//A:3.1415927410125732
+//B:0b11.001001001001001001001001....
+//C:9
+//2.91 end
+
 int main()
 {
     ex_2_57();
@@ -606,4 +670,5 @@ int main()
     ex_2_79();
     ex_2_80();
     ex_2_81();
+    ex_2_90();
 }
