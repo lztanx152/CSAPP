@@ -645,6 +645,201 @@ void ex_2_90()
 //C:9
 //2.91 end
 
+//2.92 start
+unsigned float_negate(unsigned f) {
+    unsigned sig = f >> 31;
+    unsigned exp = f >> 23 & 0xFF;
+    unsigned frac = f & 0x7FFFFF;
+
+    int is_NAN = (exp == 0xFF) && (frac != 0);
+    if (is_NAN) {
+        return f;
+    }
+
+    return ~sig << 31 | exp << 23 | frac;
+}
+void ex_2_92()
+{
+    printf("----------- Solution of 2.92 start ---------------\n");
+    printf("for %b is %b \n", 0xff, float_negate(0xff));
+    printf("for %b is %b \n", 0x7ff11111, float_negate(0x7ff11111));
+    printf("----------- Solution of 2.92 end ---------------\n");
+}
+//2.92 end
+
+//2.93 start
+unsigned float_absval(unsigned f)
+{
+    unsigned sig = f >> 31;
+    unsigned exp = f >> 23 & 0xFF;
+    unsigned frac = f & 0x7FFFFF;
+
+    int is_NAN = (exp == 0xFF) && (frac != 0);
+    if (is_NAN) {
+        return f;
+    }
+
+    if (sig)
+    {
+        return ~sig << 31 | exp << 23 | frac;
+    } else
+    {
+        return f;
+    }
+}
+
+void ex_2_93()
+{
+    printf("----------- Solution of 2.93 start ---------------\n");
+    printf("for %b is %b \n", 0xff, float_absval(0xff));
+    printf("----------- Solution of 2.93 end ---------------\n");
+}
+//2.93 end
+//2.94 start
+unsigned float_twice(unsigned f)
+{
+    unsigned sig = f >> 31;
+    unsigned exp = f >> 23 & 0xFF;
+    unsigned frac = f & 0x7FFFFF;
+
+    int is_NAN = (exp == 0xFF) && (frac != 0);
+    if (is_NAN) {
+        return f;
+    }
+    if (exp == 0xff)
+    {
+        return f;
+    }
+    // 如果是规格化的，直接把指数位置+1
+    if (exp != 0)
+    {
+        exp = exp + 1;
+        if (exp == 0xff)
+        {
+            frac = 0;
+        }
+    } else
+    // 如果是非规格化的，尾数左移，但是要考虑变为规格化的情况
+    {
+        frac = frac << 1;
+    }
+    return sig << 31 | exp << 23 | frac;
+}
+
+void ex_2_94()
+{
+    printf("----------- Solution of 2.94 start ---------------\n");
+    printf("for %b is %b \n", 0x00400000, float_twice(0x00400000));
+    printf("----------- Solution of 2.94 end ---------------\n");
+}
+//2.94 end
+
+//2.95 start
+unsigned float_half(unsigned f)
+{
+    unsigned sig = f >> 31;
+    unsigned exp = f >> 23 & 0xFF;
+    unsigned frac = f & 0x7FFFFF;
+
+    int is_NAN = (exp == 0xFF) && (frac != 0);
+    // nan或者无穷大，直接返回
+    if (is_NAN) {
+        return f;
+    }
+    if (exp == 0xff)
+    {
+        return f;
+    }
+    // 如果是规格化的，尾数减一，但是要考虑变为非规格化的情况
+    if (exp != 0)
+    {
+        exp = exp - 1;
+        if (exp == 0x00)
+        {
+            frac = (0x800000 | frac) >> 1;
+        }
+    } else
+        // 如果是非规格化的，尾数右移,但是要考虑舍入
+    {
+        // 非规格化数无隐含1，直接右移尾数；考虑舍入（向偶数舍入）
+        // 检查最低两位：如果是01则舍入，10/11则进1（向偶数舍入）
+        unsigned round_bit = frac & 0x01;
+        unsigned sticky_bit = (frac >> 1) & 0x01;
+        frac = frac >> 1;
+        // 向偶数舍入：只有当舍入位=1且粘滞位=1，或舍入位=1且右移后的最低位=1时，加1
+        if (round_bit && (sticky_bit || (frac & 0x01))) {
+            frac += 1;
+        }
+    }
+    return sig << 31 | exp << 23 | frac;
+}
+void ex_2_95()
+{
+    printf("----------- Solution of 2.95 start ---------------\n");
+    printf("for %b is %b \n", 0xff, float_half(0xff));
+    printf("----------- Solution of 2.95 end ---------------\n");
+}
+//2.95 end
+
+//2.96 start
+int float_f2i(unsigned f)
+{
+    unsigned sig = f >> 31;
+    unsigned exp = f >> 23 & 0xFF;
+    unsigned frac = f & 0x7FFFFF;
+    const unsigned bias = 0x7F;
+    // 1. 处理特殊值：NaN（指数全1+尾数非0）或无穷大（指数全1+尾数0）
+    if (exp == 0xFF) {
+        return 0x80000000; // 溢出返回0x80000000
+    }
+
+    int num = 0;
+    unsigned E = exp - bias; // 计算真实指数
+    unsigned M = frac | 0x800000; // 规格化数的尾数
+
+    // 2. 浮点数绝对值 < 1（真实指数 < 0），返回0
+    if (E < 0) {
+        num = 0;
+    }
+    // 3. 超出32位有符号整数范围
+    else if (E >= 31) {
+        // 32位有符号整数范围：[-2^31, 2^31 - 1]
+        // 真实指数≥31 或 正数但指数=30且尾数最高位为1（超过2^31-1）
+        if (E > 31 || (E == 31 && (M & 0x800000))) {
+            num = 0x80000000;
+        }
+    }
+    // 4. 正常转换：计算尾数的整数部分
+    else {
+        if (E > 23) {
+            // 指数大于23，尾数左移（E-23）位
+            num = (int)(M << (E - 23));
+        } else {
+            // 指数小于等于23，尾数右移（23-E）位（截断小数部分）
+            num = (int)(M >> (23 - E));
+        }
+    }
+
+    // 5. 处理符号：仅当符号位为1且未溢出时，返回负数
+    if (sig && num != 0x80000000) {
+        num = -num;
+    }
+
+    return num;
+}
+void ex_2_96()
+{
+    printf("----------- Solution of 2.96 start ---------------\n");
+    printf("for %b is %b \n", 0xff, float_f2i(0xff));
+    printf("for %b is %b \n", 0x41400000, float_f2i(0x41400000));
+    printf("----------- Solution of 2.96 end ---------------\n");
+}
+//2.96 end
+//2.97 start
+//略
+//2.97 end
+
+
 int main()
 {
     ex_2_57();
@@ -671,4 +866,9 @@ int main()
     ex_2_80();
     ex_2_81();
     ex_2_90();
+    ex_2_92();
+    ex_2_93();
+    ex_2_94();
+    ex_2_95();
+    ex_2_96();
 }
