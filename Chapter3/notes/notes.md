@@ -1,4 +1,4 @@
-# 3.2.1
+寄存器类型：
 程序计数器
 
 整数寄存器
@@ -6,3 +6,21 @@
 条件码寄存器
 
 向量寄存器
+
+b w l q
+
+![](/mnt/e/Code/C/CSAPP/Chapter3/notes/Snipaste_2026-03-09_23-51-58.png)
+
+4字节指令把高位置为0
+
+![](/mnt/e/Code/C/CSAPP/Chapter3/notes/Snipaste_2026-03-09_23-55-27.png)
+
+# 类型
+## 操作数
+## 数据传送
+move
+
+movez
+
+moves&cltq
+
