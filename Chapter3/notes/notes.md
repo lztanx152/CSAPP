@@ -24,3 +24,7 @@ movez
 
 moves&cltq
 
+leaq
+
+
+set指令，有符号，greater，less，无符号，above below
