@@ -55,3 +55,56 @@ long test(long x, long y, long z)
         val = x * z;
     return val;
 }
+
+long arith1(long x )
+{
+    long val = x + 7;
+    if (x >= 0)
+    {
+        val = x;
+    }
+    val = val >> 3;
+    return val;
+}
+
+long test1(long x, long y)
+{
+    long val = 8*x;
+    if (y>0)
+    {
+        if (x>y)
+        {
+            val = x&y;
+        } else
+        {
+            val = y - x;
+        }
+    } else if (y<=-2)
+    {
+        val = x+y;
+    }
+    return val;
+}
+
+long loop_while2(long a, long b)
+{
+    long result = b;
+    while (b <= 0)
+    {
+        result = result * a;
+        b = b - a;
+    }
+    return result;
+}
+
+long fun_a(unsigned long x)
+{
+    long val = 0;
+    while (x != 0)
+    {
+        val = val^x;
+        x = x >> 1;
+    }
+    return val&1;
+}
+
