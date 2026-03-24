@@ -108,3 +108,19 @@ long fun_a(unsigned long x)
     return val&1;
 }
 
+struct ELE
+{
+    long v;
+    struct ELE *p;
+};
+
+long fun (struct ELE *ptr)
+{
+    long val = 0;
+    while (ptr)
+    {
+        val += ptr->v;
+        ptr = ptr->p;
+    }
+    return val;
+}

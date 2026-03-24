@@ -28,3 +28,8 @@ leaq
 
 
 set指令，有符号，greater，less，无符号，above below
+
+过程
+
+函数，方法。子例程，处理函数
+
