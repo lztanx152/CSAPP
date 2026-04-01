@@ -124,3 +124,16 @@ long fun (struct ELE *ptr)
     }
     return val;
 }
+
+int long_switch(int o)
+{
+    switch (o)
+    {
+        case 0:
+        return 0;
+    case 10000:
+        return 1;
+        default:
+        return 2;
+    }
+}
