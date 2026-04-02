@@ -80,10 +80,37 @@ long switch3(long *p1, long *p2 ,mode_t action)
     }
     return result;
 }
+//3.63
 
+long switch_prob(long x, long n)
+{
+    long result = x;
+    switch (n)
+    {
+        case 60|62:
+            result = 8 * x;
+            break;
+        case 63:
+            result = (x >> 3);
+            break;
+        case 64:
+            result = (x << 4) - x;
+        case 65:
+            result = x * x;
+        default:
+            result = x + 0x4b;
+    }
+    return result;
+}
 
+// 3.64
+//A:A + 8 * ( STi + Tj + k )
+//B:R:7 ,S:5 , T:13
 
-
+// 3.65
+//A:rdx
+//B:rax
+//C:15
 
 
 
